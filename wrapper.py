@@ -25,11 +25,9 @@ condensed = 'CONDENSED'
 
 # Build arrays with reads filenames from glob, to be used with HISAT2
 files1 = core.getFiles('*1.%s' % extention, path +'reads1/', '/data/reads1/')
-
 files2 = core.getFiles('*2.%s' % extention, path +'reads2/', '/data/reads2/')
 
 files1.sort()
-
 files2.sort()
 
 #HISAT2 operator
