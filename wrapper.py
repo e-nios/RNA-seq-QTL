@@ -20,10 +20,13 @@ output2 = 'edgeOut2'
 condition = 'Condition::O,O,N,N'
 test = 'O-N'
 
-# Build arrays with reads filenames from glob, to be used with HISAT2
-files1 = de.getFiles('*1.%s' % extention, path +'reads1/', '/data/reads1/')
+# Happy parameters
+condensed = 'CONDENSED'
 
-files2 = de.getFiles('*2.%s' % extention, path +'reads2/', '/data/reads2/')
+# Build arrays with reads filenames from glob, to be used with HISAT2
+files1 = core.getFiles('*1.%s' % extention, path +'reads1/', '/data/reads1/')
+
+files2 = core.getFiles('*2.%s' % extention, path +'reads2/', '/data/reads2/')
 
 files1.sort()
 
@@ -39,7 +42,7 @@ featureCounts = core.featureCounts(gtf, path)
 edger = core.edgeR(path, output1, output2, condition, test)
 
 # HAPPY operator
-happy = core.happy(path, condensed, 'DBW012', base_dir)
+happy = core.happy(path, condensed, 'DBW012', path)
 
 if __name__ == '__main__':
 # check if read files are equal
@@ -60,7 +63,7 @@ if __name__ == '__main__':
 	edger.deTest('count_matrix.txt')
 # Filter the Genes List (defaults: p-value <= 0.05 and |logFC| > 1) and produce the BioInfominer list
 	files4 = core.getFiles('*.tsv', path +'edgeOut2/' , path +'edgeOut2/')
-	de.filter(files4[0])
+	core.filter(files4[0])
 # Start the QTL analysis
 	happy.qtl_map()
 	happy.ci_est()
