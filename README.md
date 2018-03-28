@@ -1,3 +1,5 @@
+![My image](https://github.com/e-nios/RNA-seq-QTL/blob/master/enios.png)
+
 # RNA-seq-QTL
 Workflow for Integration of RNAseq and QTL Analyses in Collaborative Cross Mice
 
