@@ -59,7 +59,7 @@ class hisat2(object):
 
     def align(self, input_file1, input_file2):
         subprocess.check_call(['docker', 'run', '-v', '%s:/data/' % self.base_dir,
-                    'hisat2', 'hisat2', '-x', '/data/%s' % self.index, '-q', '-1', '%s' % 
+                    'enios/rnaseq-qtl:hisat2', 'hisat2', '-x', '/data/%s' % self.index, '-q', '-1', '%s' % 
                     input_file1, '-2', '%s' % input_file2, '-S', '/data/alignments/%s.bam' % input_file1.split('/')[3].rstrip('1.fastq')])
 
 class featureCounts(object):
@@ -70,7 +70,7 @@ class featureCounts(object):
    
     def count(self, input_file):
         subprocess.check_call(['docker', 'run', '-v', '%s:/data/' % self.base_dir,
-                    'featurecounts', 'featureCounts', '-s%d' % self.strandness, '-T', '8', '-F', 'GTF', '-p', '-t', 'gene', '-g', 'gene_name', '-a', '/data/%s' % self.gtf, 
+                    'enios/rnaseq-qtl:featurecounts', 'featureCounts', '-s%d' % self.strandness, '-T', '8', '-F', 'GTF', '-p', '-t', 'gene', '-g', 'gene_name', '-a', '/data/%s' % self.gtf, 
                     '%s' % input_file, '-o', '/data/counts/%s.txt' % input_file.split('/')[3].rstrip('.bam')])
 
 class edgeR(object):
@@ -84,7 +84,7 @@ class edgeR(object):
 
 	def deTest(self, input_file):
 		subprocess.check_call(['docker', 'run', '-v', '%s:/tmp/' % self.base_dir,
-                    'edger', 'Rscript', '/mnt/edger.R', '-R', 
+                    'enios/rnaseq-qtl:edger', 'Rscript', '/mnt/edger.R', '-R', 
                     '/tmp/%s' % self.output1, '-o', '/tmp/%s' % self.output2, '-m', '/tmp/%s' % input_file,
                     '-i', self.condition, '-C', self.test, '-l', '0.0', '-p', '0.05', '-d', 'BH', '-n', self.normalization, '-b'])
 
@@ -94,9 +94,9 @@ class happy(object):
 		self.condensed = condensed
 		self.phen_name = phen_name
 		self.output1 = output1
-		self.cmd1 = ['docker', 'run', '-v', '%s:/tmp/' % self.base_dir, 'happy', 'Rscript', '/mnt/happy.dock.R', 
+		self.cmd1 = ['docker', 'run', '-v', '%s:/tmp/' % self.base_dir, 'enios/rnaseq-qtl:happy', 'Rscript', '/mnt/happy.dock.R', 
 			'/tmp/%s' % self.condensed, '/tmp/happy_docker/data.file.txt', self.phen_name, '1000', '/tmp/%s' % 'DBW012.Rdata']
-		self.cmd2 = ['docker', 'run', '-v', '%s:/tmp/' % self.base_dir, 'happy', 'Rscript', '/mnt/simlocus.dock.R', 
+		self.cmd2 = ['docker', 'run', '-v', '%s:/tmp/' % self.base_dir, 'enios/rnaseq-qtl:happy', 'Rscript', '/mnt/simlocus.dock.R', 
 			'/tmp/%s' % self.condensed, 'chr5', '2235', '5', self.phen_name, '/tmp/happy_docker/data.file.txt']
 
 	def qtl_map(self):
