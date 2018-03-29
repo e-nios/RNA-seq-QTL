@@ -33,14 +33,12 @@ def buildMatrix(path, extention):
 	count_matrix.columns = count_matrix.columns.str.replace(extention + '.bam','')
 	count_matrix.to_csv(path + 'count_matrix.txt', sep = '	', index=False, header=True)
 
-def filter(fileName, logFC = 1, pValue = 0.05):
+def filter(path, fileName, logFC = 1, pValue = 0.05):
 	gene_id=[]
 	log_fc=[]
 	p_value=[]
-
 	F = open(fileName, "r") 
-	O = open('/media/pestilence/Data/testFolder2/edgeOut2/BIM_list.txt', "w")
-
+	O = open(path + '/edgeOut2/BIM_list.txt', "w")
 	next(F)
 	for line in F:
 		gene_id=(line.replace("\"","").split("\t")[0])
@@ -48,30 +46,62 @@ def filter(fileName, logFC = 1, pValue = 0.05):
 		p_value=(line.replace("NA", "1").rstrip().split("\t")[4])
 		if float(log_fc) != 0 and float(p_value) <= pValue and (float(log_fc)<=-logFC or float(log_fc)>=logFC):
 			O.writelines(gene_id+"\t"+log_fc+"\t"+p_value+"\n")
-
 	F.close()
 	O.close()
 
 class hisat2(object):
-    def __init__(self, index, base_dir, *args):
-        self.index = index
-        self.base_dir = base_dir
+	def __init__(self, index, base_dir, fileExtention, jsonArgs=None, singleEnd=None, reads = '-q', orientation = '--fr'):
+		if isinstance(jsonArgs, dict):
+			self.index = index
+			self.base_dir = base_dir
+			self.fileExtention = fileExtention
+			self.reads=jsonArgs['hisat2'][0]
+			self.orientation=jsonArgs['hisat2'][1]
+		else:
+			self.index = index
+			self.base_dir = base_dir
+			self.fileExtention = fileExtention
+			self.reads = reads
+			self.orientation = orientation
 
-    def align(self, input_file1, input_file2):
-        subprocess.check_call(['docker', 'run', '-v', '%s:/data/' % self.base_dir,
-                    'enios/rnaseq-qtl:hisat2', 'hisat2', '-x', '/data/%s' % self.index, '-q', '-1', '%s' % 
-                    input_file1, '-2', '%s' % input_file2, '-S', '/data/alignments/%s.bam' % input_file1.split('/')[3].rstrip('1.fastq')])
+	def alignPaired(self, input_files1, input_files2):
+		subprocess.check_call(['docker', 'run', '-v', '%s:/data/' % self.base_dir,
+			'enios/rnaseq-qtl:hisat2', 'hisat2', self.orientation, self.reads, '-x', '/data/%s' % self.index, '-1', '%s' % 
+			input_files1, '-2', '%s' % input_files2, '-S', '/data/alignments/%s.bam' % input_files1.split('/')[3].rstrip('1.%s' % self.fileExtention)])
+
+	def alignSingle(self, input_files):
+		subprocess.check_call(['docker', 'run', '-v', '%s:/data/' % self.base_dir,
+			'enios/rnaseq-qtl:hisat2', 'hisat2', self.reads, '-x', '/data/%s' % self.index, '-U', '%s' % 
+			input_files, '-S', '/data/alignments/%s.bam' % input_files.split('/')[3].rstrip('1.%s' % self.fileExtention)])
 
 class featureCounts(object):
-    def __init__(self, gtf, base_dir, strandness = 2, *args):
-        self.gtf = gtf
-        self.base_dir = base_dir
-	self.strandness = strandness
+    def __init__(self, gtf, base_dir, jsonArgs=None, fileFormat = 'GTF', featureType = 'gene', attributeType = 'gene_name',  strandness = 2, threads = 1):
+    	if isinstance(jsonArgs, dict):
+			self.gtf = gtf
+			self.base_dir = base_dir
+			self.fileFormat = jsonArgs['featureCounts'][0]
+			self.featureType = jsonArgs['featureCounts'][1]
+			self.attributeType = jsonArgs['featureCounts'][2]
+			self.strandness = jsonArgs['featureCounts'][3]
+			self.threads = jsonArgs['featureCounts'][4]
+        else:
+			self.gtf = gtf
+			self.base_dir = base_dir
+			self.fileFormat = fileFormat
+			self.featureType = featureType
+			self.attributeType = attributeType
+			self.strandness = strandness
+			self.threads = threads
    
-    def count(self, input_file):
-        subprocess.check_call(['docker', 'run', '-v', '%s:/data/' % self.base_dir,
-                    'enios/rnaseq-qtl:featurecounts', 'featureCounts', '-s%d' % self.strandness, '-T', '8', '-F', 'GTF', '-p', '-t', 'gene', '-g', 'gene_name', '-a', '/data/%s' % self.gtf, 
-                    '%s' % input_file, '-o', '/data/counts/%s.txt' % input_file.split('/')[3].rstrip('.bam')])
+    def countPaired(self, input_file):
+		subprocess.check_call(['docker', 'run', '-v', '%s:/data/' % self.base_dir,
+                    'enios/rnaseq-qtl:featurecounts', 'featureCounts', '-F', self.fileFormat, '-t', self.featureType, '-g', self.attributeType, '-s%d' % self.strandness, 
+                    '-T%d' % self.threads , '-p', '-a', '/data/%s' % self.gtf, '%s' % input_file, '-o', '/data/counts/%s.txt' % input_file.split('/')[3].rstrip('.bam')])
+
+    def countSingle(self, input_file):
+		subprocess.check_call(['docker', 'run', '-v', '%s:/data/' % self.base_dir,
+                    'enios/rnaseq-qtl:featurecounts', 'featureCounts', '-F', self.fileFormat, '-t', self.featureType, '-g', self.attributeType, '-s%d' % self.strandness, 
+                    '-T%d' % self.threads , '-a', '/data/%s' % self.gtf, '%s' % input_file, '-o', '/data/counts/%s.txt' % input_file.split('/')[3].rstrip('.bam')])
 
 class edgeR(object):
 	def __init__(self, base_dir, output1, output2, condition, test, normalization='TMM', *args):
@@ -103,4 +133,4 @@ class happy(object):
 		subprocess.check_call(self.cmd1)
 
 	def ci_est(self):
-		subprocess.check_call(self.cmd2)
+		subprocess.check_call(self.cmd2
