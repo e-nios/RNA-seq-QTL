@@ -21,8 +21,8 @@ files3 = []
 parameters=None
 path = sys.argv[1]
 index = sys.argv[2]
-extention = sys.argv[3]
-gtf = sys.argv[4]
+gtf = sys.argv[3]
+extention = sys.argv[4]
 try:
 	parameters = json.loads(sys.argv[5])
 except: 
