@@ -60,4 +60,4 @@ $ sudo python wrapper.py <arguments>
 ## Acknowledgments
 
 * **Binenbaum Ilona** - *QTL analysis*
-* **Vlachavas Eustathios** - *Rscripts development*
+* **Vlachavas Iason Efstathios** - *Rscripts development*
