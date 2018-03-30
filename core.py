@@ -8,27 +8,24 @@ def getFiles(extention, path1, path2):
 	os.chdir(path1)
 	files = []
 	for file in glob.glob(extention):
-    		file_name = path2 + file
-    		files.append(file_name)
-    	return files
+		file_name = path2 + file
+		files.append(file_name)
+	return files
 
 def buildMatrix(path, extention):
 	files = []
 	file_names = []
 	os.chdir(path + 'counts/')
-	
 	for file in glob.glob('*.txt'):
 		file_name = path + 'counts/' + file
 		files.append(file_name)
 		file_names.append('/data/alignments/' + file.rstrip('.txt'))
 	tmp = pd.read_csv(files[0], sep = "\t", header = 1)
 	count_matrix = tmp['Geneid']
-	
 	for i in range(0,len(files)):
 		counts = pd.read_csv(files[i], sep = "\t", header = 1)
 		raw_counts = counts['%s.bam' % file_names[i]]
 		count_matrix = pd.concat([count_matrix,raw_counts], axis=1)
-
 	count_matrix.columns = count_matrix.columns.str.replace('/data/alignments/','')
 	count_matrix.columns = count_matrix.columns.str.replace(extention + '.bam','')
 	count_matrix.to_csv(path + 'count_matrix.txt', sep = '	', index=False, header=True)
@@ -75,8 +72,8 @@ class hisat2(object):
 			input_files, '-S', '/data/alignments/%s.bam' % input_files.split('/')[3].rstrip('1.%s' % self.fileExtention)])
 
 class featureCounts(object):
-    def __init__(self, gtf, base_dir, jsonArgs=None, fileFormat = 'GTF', featureType = 'gene', attributeType = 'gene_name',  strandness = 2, threads = 1):
-    	if isinstance(jsonArgs, dict):
+	def __init__(self, gtf, base_dir, jsonArgs=None, fileFormat = 'GTF', featureType = 'gene', attributeType = 'gene_name',  strandness = 2, threads = 1):
+		if isinstance(jsonArgs, dict):
 			self.gtf = gtf
 			self.base_dir = base_dir
 			self.fileFormat = jsonArgs['featureCounts'][0]
@@ -84,7 +81,7 @@ class featureCounts(object):
 			self.attributeType = jsonArgs['featureCounts'][2]
 			self.strandness = jsonArgs['featureCounts'][3]
 			self.threads = jsonArgs['featureCounts'][4]
-        else:
+		else:
 			self.gtf = gtf
 			self.base_dir = base_dir
 			self.fileFormat = fileFormat
@@ -92,16 +89,16 @@ class featureCounts(object):
 			self.attributeType = attributeType
 			self.strandness = strandness
 			self.threads = threads
-   
-    def countPaired(self, input_file):
-		subprocess.check_call(['docker', 'run', '-v', '%s:/data/' % self.base_dir,
-                    'enios/rnaseq-qtl:featurecounts', 'featureCounts', '-F', self.fileFormat, '-t', self.featureType, '-g', self.attributeType, '-s%d' % self.strandness, 
-                    '-T%d' % self.threads , '-p', '-a', '/data/%s' % self.gtf, '%s' % input_file, '-o', '/data/counts/%s.txt' % input_file.split('/')[3].rstrip('.bam')])
 
-    def countSingle(self, input_file):
+	def countPaired(self, input_file):
 		subprocess.check_call(['docker', 'run', '-v', '%s:/data/' % self.base_dir,
-                    'enios/rnaseq-qtl:featurecounts', 'featureCounts', '-F', self.fileFormat, '-t', self.featureType, '-g', self.attributeType, '-s%d' % self.strandness, 
-                    '-T%d' % self.threads , '-a', '/data/%s' % self.gtf, '%s' % input_file, '-o', '/data/counts/%s.txt' % input_file.split('/')[3].rstrip('.bam')])
+			'enios/rnaseq-qtl:featurecounts', 'featureCounts', '-F', self.fileFormat, '-t', self.featureType, '-g', self.attributeType, '-s%d' % self.strandness, 
+			'-T%d' % self.threads , '-p', '-a', '/data/%s' % self.gtf, '%s' % input_file, '-o', '/data/counts/%s.txt' % input_file.split('/')[3].rstrip('.bam')])
+
+	def countSingle(self, input_file):
+		subprocess.check_call(['docker', 'run', '-v', '%s:/data/' % self.base_dir,
+		'enios/rnaseq-qtl:featurecounts', 'featureCounts', '-F', self.fileFormat, '-t', self.featureType, '-g', self.attributeType, '-s%d' % self.strandness, 
+		'-T%d' % self.threads , '-a', '/data/%s' % self.gtf, '%s' % input_file, '-o', '/data/counts/%s.txt' % input_file.split('/')[3].rstrip('.bam')])
 
 class edgeR(object):
 	def __init__(self, base_dir, output1, output2, condition, test, normalization='TMM', *args):
@@ -114,9 +111,9 @@ class edgeR(object):
 
 	def deTest(self, input_file):
 		subprocess.check_call(['docker', 'run', '-v', '%s:/tmp/' % self.base_dir,
-                    'enios/rnaseq-qtl:edger', 'Rscript', '/mnt/edger.R', '-R', 
-                    '/tmp/%s' % self.output1, '-o', '/tmp/%s' % self.output2, '-m', '/tmp/%s' % input_file,
-                    '-i', self.condition, '-C', self.test, '-l', '0.0', '-p', '0.05', '-d', 'BH', '-n', self.normalization, '-b'])
+			'enios/rnaseq-qtl:edger', 'Rscript', '/mnt/edger.R', '-R', 
+			'/tmp/%s' % self.output1, '-o', '/tmp/%s' % self.output2, '-m', '/tmp/%s' % input_file,
+			'-i', self.condition, '-C', self.test, '-l', '0.0', '-p', '0.05', '-d', 'BH', '-n', self.normalization, '-b'])
 
 class happy(object):
 	def __init__(self, base_dir, condensed, phen_name, output1):
