@@ -44,8 +44,9 @@ In order for the workflow to run the user is required to create a directory with
 #### (6) CONDENSED: FOLDER where the condensed data are stored (HAPPY input, please visit)
 #### (7) file.gtf: a GTF FILE for the appropriate genome (for example Mus_musculus.GRCm38.91.gtf)
 #### (8) data.txt: a TXT FILE (HAPPY input)
+#### (9) parameters.json: a JSON FILE containing user specified parameters for each tool (optional)
 
-### 4. Clone and run the scripts locally
+### 1.4. Clone and run the scripts locally
 The scripts should be downloaded and run from inside the same directory (core.py is called as a module inside wrapper.py and needs to be in the same directory):
 ```
 $ cd /path/to/scripts/
@@ -53,11 +54,57 @@ $ cd /path/to/scripts/
 $ sudo python wrapper.py <arguments>
 ```
 
-## Authors
+## 2. Arguments
+The command line arguments are divided into to categories. The Basic arguments that start the workflow using default parameters and the Advanced (optional) arguments that modify each tool according to the individual needs of the researcher.
+
+### 2.1. Basic arguments
+There are two (2) basic arguments the user is required to input in order for the scripts to run on default parameters:
+#### a. Path to files/folders: the absolute path to the directory containing the folders and data for the RNA-seq – QTL workflow (see 1.3. Prepare the working directory)
+#### b. The file format of the RNA-seq input files
+
+For example, if the user has set up a working directory named “Experiment1” and the input files are FASTQ, the command should be something like:
+```
+$ sudo python wrapper /home/$user/Experiment1/ fastq
+```
+#### Note:
+The script must be run with **sudo privileges** (on Linux distributions) in order for the docker daemon to launch the containers. 
+
+### 2.2. Advanced arguments (optional)
+If the user needs to modify the tool – specific arguments, he/she is required to input a JSON file (please see the JSON folder for more information) as an extra argument.
+For example, if the user has set up a working directory named “Experiment1” and the input files are FASTQ, the command should be something like:
+```
+$ sudo python wrapper /home/$user/Experiment1/ fastq /path/to/parameters.json
+```
+
+## 3. Tool – specific parameters
+If the script is run with the correct arguments, the user will be prompt to input the following parameters:
+
+#### |-----------HISAT2---------|
+**HISAT2 index**:	The basename of the index for the reference genome. The basename is the name of any of the index files up to but not including the final. For example if the index is stored in the working directory inside a folder named hisat2_index, the input should be **hisat2_index/mm10/mm10**.
+
+#### |-----------FeatureCounts---------|
+**GTF File**: the GTF file name for the appropriate genome, for example **Mus_musculus.GRCm38.91.gtf**.
+
+#### |-----------EdgeR---------|
+**Factors**: A string containing factors, for example if there are 6 biological replicates, 3 Normal and 3 Case the input should be **Normal,Normal,Normal,Case,Case,Case** (make sure that the order of the factors corresponds to the appropriate replicate).
+
+**Contrast of interest**: A string containing the contrast of interest, following the previous example the input should be **Normal-Case** (or **Case-Normal**, depending on the contrast the user needs to test).
+
+#### |-----------HAPPY----------|
+**Chromosome**: A string specifying the chromosome that the QTL analysis will be performed upon. For example **chr5** (the user is required to input the chr prefix)
+
+**Locus**: An integer specifying the genetic locus for the QTL analysis. For example **2235**.
+
+**Phenotype Name**: A string specifying the phenotype name in the data.txt file. For example **DB0123**.
+
+**Input File**: A string specifying the input file for the QTL analysis. For example **data.txt** (the path to the file is not required, provided that it is inside the working directory as described in  1.3. Prepare the working directory).
+
+
+### Authors
 
 * **Fotakis Giorgos** - *QTL-RNAseq analysis workflow development, Docker containerization*
 
-## Acknowledgments
+### Acknowledgments
 
 * **Binenbaum Ilona** - *QTL analysis*
 * **Vlachavas Iason Efstathios** - *Rscripts development*
