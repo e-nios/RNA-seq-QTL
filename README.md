@@ -108,3 +108,11 @@ If the script is run with the correct arguments, the user will be prompt to inpu
 
 * **Binenbaum Ilona** - *QTL analysis*
 * **Vlachavas Iason Efstathios** - *Rscripts development*
+
+### Tools
+
+* [BioInfoMiner](https://e-nios.com/bioinfominer/)
+* [HISAT2](https://ccb.jhu.edu/software/hisat2/index.shtml)
+* [FeatureCounts](http://bioinf.wehi.edu.au/featureCounts/)
+* [EdgeR](http://bioconductor.org/packages/release/bioc/html/edgeR.html)
+* [HAPPY](http://r-forge.r-project.org/projects/happy/)
