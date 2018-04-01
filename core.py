@@ -8,24 +8,27 @@ def getFiles(extention, path1, path2):
 	os.chdir(path1)
 	files = []
 	for file in glob.glob(extention):
-		file_name = path2 + file
-		files.append(file_name)
-	return files
+    		file_name = path2 + file
+    		files.append(file_name)
+    	return files
 
 def buildMatrix(path, extention):
 	files = []
 	file_names = []
 	os.chdir(path + 'counts/')
+	
 	for file in glob.glob('*.txt'):
 		file_name = path + 'counts/' + file
 		files.append(file_name)
 		file_names.append('/data/alignments/' + file.rstrip('.txt'))
 	tmp = pd.read_csv(files[0], sep = "\t", header = 1)
 	count_matrix = tmp['Geneid']
+	
 	for i in range(0,len(files)):
 		counts = pd.read_csv(files[i], sep = "\t", header = 1)
 		raw_counts = counts['%s.bam' % file_names[i]]
 		count_matrix = pd.concat([count_matrix,raw_counts], axis=1)
+
 	count_matrix.columns = count_matrix.columns.str.replace('/data/alignments/','')
 	count_matrix.columns = count_matrix.columns.str.replace(extention + '.bam','')
 	count_matrix.to_csv(path + 'count_matrix.txt', sep = '	', index=False, header=True)
@@ -35,7 +38,7 @@ def filter(path, fileName, logFC = 1, pValue = 0.05):
 	log_fc=[]
 	p_value=[]
 	F = open(fileName, "r") 
-	O = open(path + '/edgeOut2/BIM_list.txt', "w")
+	O = open(path + '/EdgeR/BIM_list.txt', "w")
 	next(F)
 	for line in F:
 		gene_id=(line.replace("\"","").split("\t")[0])
@@ -47,13 +50,13 @@ def filter(path, fileName, logFC = 1, pValue = 0.05):
 	O.close()
 
 class hisat2(object):
-	def __init__(self, index, base_dir, fileExtention, jsonArgs=None, singleEnd=None, reads = '-q', orientation = '--fr'):
+	def __init__(self, index, base_dir, fileExtention, jsonArgs = None, singleEnd = None, reads = '-q', orientation = '--fr'):
 		if isinstance(jsonArgs, dict):
 			self.index = index
 			self.base_dir = base_dir
 			self.fileExtention = fileExtention
-			self.reads=jsonArgs['hisat2'][0]
-			self.orientation=jsonArgs['hisat2'][1]
+			self.reads=jsonArgs['hisat2']['reads']
+			self.orientation=jsonArgs['hisat2']['orientation']
 		else:
 			self.index = index
 			self.base_dir = base_dir
@@ -61,27 +64,27 @@ class hisat2(object):
 			self.reads = reads
 			self.orientation = orientation
 
-	def alignPaired(self, input_files1, input_files2):
+	def alignPaired(self, inputFile1, inputFile2):
 		subprocess.check_call(['docker', 'run', '-v', '%s:/data/' % self.base_dir,
 			'enios/rnaseq-qtl:hisat2', 'hisat2', self.orientation, self.reads, '-x', '/data/%s' % self.index, '-1', '%s' % 
-			input_files1, '-2', '%s' % input_files2, '-S', '/data/alignments/%s.bam' % input_files1.split('/')[3].rstrip('1.%s' % self.fileExtention)])
+			inputFile1, '-2', '%s' % inputFile2, '-S', '/data/alignments/%s.bam' % inputFile1.split('/')[3].rstrip('.%s' % self.fileExtention)])
 
-	def alignSingle(self, input_files):
+	def alignSingle(self, inputFile):
 		subprocess.check_call(['docker', 'run', '-v', '%s:/data/' % self.base_dir,
 			'enios/rnaseq-qtl:hisat2', 'hisat2', self.reads, '-x', '/data/%s' % self.index, '-U', '%s' % 
-			input_files, '-S', '/data/alignments/%s.bam' % input_files.split('/')[3].rstrip('1.%s' % self.fileExtention)])
+			inputFile, '-S', '/data/alignments/%s.bam' % inputFile.split('/')[3].rstrip('.%s' % self.fileExtention)])
 
 class featureCounts(object):
-	def __init__(self, gtf, base_dir, jsonArgs=None, fileFormat = 'GTF', featureType = 'gene', attributeType = 'gene_name',  strandness = 2, threads = 1):
-		if isinstance(jsonArgs, dict):
+    def __init__(self, gtf, base_dir, jsonArgs=None, fileFormat = 'GTF', featureType = 'gene', attributeType = 'gene_name',  strandness = 2, threads = 1):
+    	if isinstance(jsonArgs, dict):
 			self.gtf = gtf
 			self.base_dir = base_dir
-			self.fileFormat = jsonArgs['featureCounts'][0]
-			self.featureType = jsonArgs['featureCounts'][1]
-			self.attributeType = jsonArgs['featureCounts'][2]
-			self.strandness = jsonArgs['featureCounts'][3]
-			self.threads = jsonArgs['featureCounts'][4]
-		else:
+			self.fileFormat = jsonArgs['featureCounts']['fileFormat']
+			self.featureType = jsonArgs['featureCounts']['featureType']
+			self.attributeType = jsonArgs['featureCounts']['attributeType']
+			self.strandness = jsonArgs['featureCounts']['strandness']
+			self.threads = jsonArgs['featureCounts']['threads']
+        else:
 			self.gtf = gtf
 			self.base_dir = base_dir
 			self.fileFormat = fileFormat
@@ -89,45 +92,61 @@ class featureCounts(object):
 			self.attributeType = attributeType
 			self.strandness = strandness
 			self.threads = threads
-
-	def countPaired(self, input_file):
+   
+    def countPaired(self, inputFile):
 		subprocess.check_call(['docker', 'run', '-v', '%s:/data/' % self.base_dir,
-			'enios/rnaseq-qtl:featurecounts', 'featureCounts', '-F', self.fileFormat, '-t', self.featureType, '-g', self.attributeType, '-s%d' % self.strandness, 
-			'-T%d' % self.threads , '-p', '-a', '/data/%s' % self.gtf, '%s' % input_file, '-o', '/data/counts/%s.txt' % input_file.split('/')[3].rstrip('.bam')])
+                'enios/rnaseq-qtl:featurecounts', 'featureCounts', '-F', self.fileFormat, '-t', self.featureType, '-g', self.attributeType, '-s%s' % self.strandness, 
+                '-T%s' % self.threads , '-p', '-a', '/data/%s' % self.gtf, '%s' % inputFile, '-o', '/data/counts/%s.txt' % inputFile.split('/')[3].rstrip('.bam')])
 
-	def countSingle(self, input_file):
+    def countSingle(self, inputFile):
 		subprocess.check_call(['docker', 'run', '-v', '%s:/data/' % self.base_dir,
-		'enios/rnaseq-qtl:featurecounts', 'featureCounts', '-F', self.fileFormat, '-t', self.featureType, '-g', self.attributeType, '-s%d' % self.strandness, 
-		'-T%d' % self.threads , '-a', '/data/%s' % self.gtf, '%s' % input_file, '-o', '/data/counts/%s.txt' % input_file.split('/')[3].rstrip('.bam')])
+                'enios/rnaseq-qtl:featurecounts', 'featureCounts', '-F', self.fileFormat, '-t', self.featureType, '-g', self.attributeType, '-s%s' % self.strandness, 
+                '-T%s' % self.threads , '-a', '/data/%s' % self.gtf, '%s' % inputFile, '-o', '/data/counts/%s.txt' % inputFile.split('/')[3].rstrip('.bam')])
 
 class edgeR(object):
-	def __init__(self, base_dir, output1, output2, condition, test, normalization='TMM', *args):
-		self.base_dir = base_dir
-		self.output1 = output1
-		self.output2 = output2
-		self.condition = condition
-		self.test = test
-		self.normalization = normalization
+	def __init__(self, base_dir, condition, test, jsonArgs = None, logFC = 0.0, pValue = 0.05, pAdjast = 'BH', normalization = 'TMM'):
+		if isinstance(jsonArgs, dict):
+			self.base_dir = base_dir
+			self.condition = condition
+			self.test = test
+			self.logFC = jsonArgs['edger']['logFC']
+			self.pValue = jsonArgs['edger']['pValue']
+			self.pAdjast = jsonArgs['edger']['pAdjast']
+			self.normalization = jsonArgs['edger']['normalization']
+		else:
+			self.base_dir = base_dir
+			self.condition = condition
+			self.test = test
+			self.logFC = logFC
+			self.pValue = pValue
+			self.pAdjast = pAdjast
+			self.normalization = normalization
 
-	def deTest(self, input_file):
+	def deTest(self, inputFile):
 		subprocess.check_call(['docker', 'run', '-v', '%s:/tmp/' % self.base_dir,
-			'enios/rnaseq-qtl:edger', 'Rscript', '/mnt/edger.R', '-R', 
-			'/tmp/%s' % self.output1, '-o', '/tmp/%s' % self.output2, '-m', '/tmp/%s' % input_file,
-			'-i', self.condition, '-C', self.test, '-l', '0.0', '-p', '0.05', '-d', 'BH', '-n', self.normalization, '-b'])
+                'enios/rnaseq-qtl:edger', 'Rscript', '/mnt/edger.R', '-R', 
+                '/tmp/EdgeR_summary', '-o', '/tmp/EdgeR', '-m', '/tmp/%s' % inputFile,
+                '-i', self.condition, '-C', self.test, '-l', '%s' % self.logFC, '-p', '%s' % self.pValue, '-d', self.pAdjast, '-n', self.normalization, '-b'])
 
 class happy(object):
-	def __init__(self, base_dir, condensed, phen_name, output1):
-		self.base_dir = base_dir
-		self.condensed = condensed
-		self.phen_name = phen_name
-		self.output1 = output1
-		self.cmd1 = ['docker', 'run', '-v', '%s:/tmp/' % self.base_dir, 'enios/rnaseq-qtl:happy', 'Rscript', '/mnt/happy.dock.R', 
-			'/tmp/%s' % self.condensed, '/tmp/happy_docker/data.file.txt', self.phen_name, '1000', '/tmp/%s' % 'DBW012.Rdata']
-		self.cmd2 = ['docker', 'run', '-v', '%s:/tmp/' % self.base_dir, 'enios/rnaseq-qtl:happy', 'Rscript', '/mnt/simlocus.dock.R', 
-			'/tmp/%s' % self.condensed, 'chr5', '2235', '5', self.phen_name, '/tmp/happy_docker/data.file.txt']
+	def __init__(self, baseDir, pheName, chrom, locus, jsonArgs = None, permermutations = 1000):
+		if isinstance(jsonArgs, dict):
+			self.baseDir = baseDir
+			self.pheName = pheName
+			self.chrom = chrom
+			self.locus = locus
+			self.permutations = jsonArgs["happy"]["permutations"]
+		else:
+			self.baseDir = baseDir
+			self.pheName = pheName
+			self.permutations = permermutations
+			self.chrom = chrom
+			self.locus = locus
 
-	def qtl_map(self):
-		subprocess.check_call(self.cmd1)
+	def qtl_map(self, inputFile):
+		subprocess.check_call(['docker', 'run', '-v', '%s:/tmp/' % self.baseDir, 'enios/rnaseq-qtl:happy', 'Rscript', '/mnt/happy.dock.R', 
+			'/tmp/CONDENSED', '/tmp/%s' % inputFile, self.pheName, "%s" % self.permutations, '/tmp/%s.Rdata' % self.pheName])
 
-	def ci_est(self):
-		subprocess.check_call(self.cmd2
+	def ci_est(self, inputFile):
+		subprocess.check_call(['docker', 'run', '-v', '%s:/tmp/' % self.baseDir, 'enios/rnaseq-qtl:happy', 'Rscript', '/mnt/simlocus.dock.R', 
+			'/tmp/CONDENSED', self.chrom, "%s" % self.locus, "%s" % self.chrom.lstrip("chr"), self.pheName, '/tmp/%s' % inputFile])
