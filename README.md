@@ -79,18 +79,18 @@ $ sudo python wrapper /home/$user/Experiment1/ fastq /path/to/parameters.json
 ## 3. Tool – specific parameters
 If the script is run with the correct arguments, the user will be prompt to input the following parameters:
 
-#### 3.1. HISAT2
+### 3.1. HISAT2
 **HISAT2 index**:	The basename of the index for the reference genome. The basename is the name of any of the index files up to but not including the final. For example if the index is stored in the working directory inside a folder named hisat2_index, the input should be **hisat2_index/mm10/mm10**.
 
-#### 3.2. FeatureCounts
+### 3.2. FeatureCounts
 **GTF File**: the GTF file name for the appropriate genome, for example **Mus_musculus.GRCm38.91.gtf**.
 
-#### 3.3. EdgeR
+### 3.3. EdgeR
 **Factors**: A string containing factors, for example if there are 6 biological replicates, 3 Normal and 3 Case the input should be **Normal,Normal,Normal,Case,Case,Case** (make sure that the order of the factors corresponds to the appropriate replicate).
 
 **Contrast of interest**: A string containing the contrast of interest, following the previous example the input should be **Normal-Case** (or **Case-Normal**, depending on the contrast the user needs to test).
 
-#### 3.4. HAPPY
+### 3.4. HAPPY
 **Chromosome**: A string specifying the chromosome that the QTL analysis will be performed upon. For example **chr5** (the user is required to input the chr prefix)
 
 **Locus**: An integer specifying the genetic locus for the QTL analysis. For example **2235**.
