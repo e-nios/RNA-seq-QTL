@@ -3,7 +3,7 @@
 	{
         "reads":"-q",
         "orientation":"--fr"
-    },
+    	},
 	"featureCounts":
 	{
 		"fileFormat":"GTF",
