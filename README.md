@@ -55,7 +55,7 @@ $ sudo python wrapper.py <arguments>
 ```
 
 ## 2. Arguments
-The command line arguments are divided into to categories. The Basic arguments that start the workflow using default parameters and the Advanced (optional) arguments that modify each tool according to the individual needs of the researcher.
+The command line arguments are divided into two categories. The Basic arguments that start the workflow using default parameters and the Advanced (optional) arguments that modify each tool according to the individual needs of the researcher.
 
 ### 2.1. Basic arguments
 There are two (2) basic arguments the user is required to input in order for the scripts to run on default parameters:
