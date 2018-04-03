@@ -1,8 +1,8 @@
 {
 	"hisat2":
 	{
-        "reads":"-q",
-        "orientation":"--fr"
+        	"reads":"-q",
+        	"orientation":"--fr"
     	},
 	"featureCounts":
 	{
