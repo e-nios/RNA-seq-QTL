@@ -10,7 +10,7 @@
 		"featureType":"gene",
 		"attributeType":"gene_name",
 		"strandness":"2",
-		"threads":"4"
+		"threads":"1"
 	},
 	"edger":
 	{
