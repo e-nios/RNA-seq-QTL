@@ -41,7 +41,7 @@ In order for the workflow to run the user is required to create a directory with
 #### (3) hisat2_index:  FOLDER where the index for HISAT2 is stored, if you need to download a specific index please visit the HISAT 2 index repository (ftp://ftp.ccb.jhu.edu/pub/infphilo/hisat2/data)
 #### (4) alignments: FOLDER where the aligned reads are stored (HISAT2 output)
 #### (5) counts: FOLDER where the raw counts are stored (FeatureCounts output)
-#### (6) CONDENSED: FOLDER where the condensed data are stored (HAPPY input, please visit)
+#### (6) CONDENSED: FOLDER where the condensed data are stored (HAPPY input, please visit http://mtweb.cs.ucl.ac.uk/mus/www/preCC/MEGA_MUGA/Mar2015.MEGA+MDA+MUGA/CONDENSED/)
 #### (7) file.gtf: a GTF FILE for the appropriate genome (for example Mus_musculus.GRCm38.91.gtf)
 #### (8) data.txt: a TXT FILE (HAPPY input)
 #### (9) parameters.json: a JSON FILE containing user specified parameters for each tool (optional)
