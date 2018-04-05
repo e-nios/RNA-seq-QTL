@@ -93,7 +93,7 @@ If the script is run with the correct arguments, the user will be prompt to inpu
 ### 3.4. HAPPY
 **Chromosome**: A string specifying the chromosome that the QTL analysis will be performed upon. For example **chr5** (the user is required to input the chr prefix)
 
-**Locus**: An integer specifying the genetic locus for the QTL analysis. For example **2235**.
+**Locus**: An integer specifying the genetic locus of the QTL peak from the QTL analysis. For example **2235**.
 
 **Phenotype Name**: A string specifying the phenotype name in the data.txt file. For example **DB0123**.
 
