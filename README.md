@@ -3,7 +3,7 @@
 # RNA-seq-QTL
 Workflow for Integration of RNAseq and QTL Analyses in Collaborative Cross Mice
 
-This workflow is designed for automated integration analysis of RNA-seq and μ-array data. The RNA-seq part is optimized for Illumina TruSeq Technology, so if the scripts are run on default parameters the user is required to input paired – end (forward – reverse) stranded Illumina reads.
+This workflow is designed for automated integration analysis of RNA-seq and QTL data. The RNA-seq part is optimized for Illumina TruSeq Technology, so if the scripts are run on default parameters the user is required to input paired – end (forward – reverse) stranded Illumina reads.
 
 ## 1. Prerequisites
 
@@ -41,9 +41,9 @@ In order for the workflow to run the user is required to create a directory with
 #### (3) hisat2_index:  FOLDER where the index for HISAT2 is stored, if you need to download a specific index please visit the HISAT 2 index repository (ftp://ftp.ccb.jhu.edu/pub/infphilo/hisat2/data)
 #### (4) alignments: FOLDER where the aligned reads are stored (HISAT2 output)
 #### (5) counts: FOLDER where the raw counts are stored (FeatureCounts output)
-#### (6) CONDENSED: FOLDER where the condensed data are stored (HAPPY input, please visit http://mtweb.cs.ucl.ac.uk/mus/www/preCC/MEGA_MUGA/Mar2015.MEGA+MDA+MUGA/CONDENSED/)
+#### (6) CONDENSED: FOLDER where the condensed genotype data are stored (HAPPY input, please visit http://mtweb.cs.ucl.ac.uk/mus/www/preCC/MEGA_MUGA/Mar2015.MEGA+MDA+MUGA/CONDENSED/)
 #### (7) file.gtf: a GTF FILE for the appropriate genome (for example Mus_musculus.GRCm38.91.gtf)
-#### (8) data.txt: a TXT FILE (HAPPY input)
+#### (8) data.txt: a TXT FILE with phenotypes (HAPPY input)
 #### (9) parameters.json: a JSON FILE containing user specified parameters for each tool (optional)
 
 ### 1.4. Clone and run the scripts locally
@@ -91,13 +91,13 @@ If the script is run with the correct arguments, the user will be prompt to inpu
 **Contrast of interest**: A string containing the contrast of interest, following the previous example the input should be **Normal-Case** (or **Case-Normal**, depending on the contrast the user needs to test).
 
 ### 3.4. HAPPY
-**Chromosome**: A string specifying the chromosome that the QTL analysis will be performed upon. For example **chr5** (the user is required to input the chr prefix)
+**Chromosome**: A string specifying the chromosome containing the QTL peak from the QTL analysis. For example **chr5** (the user is required to input the chr prefix)
 
 **Locus**: An integer specifying the genetic locus of the QTL peak from the QTL analysis. For example **2235**.
 
 **Phenotype Name**: A string specifying the phenotype name in the data.txt file. For example **DB0123**.
 
-**Input File**: A string specifying the input file for the QTL analysis. For example **data.txt** (the path to the file is not required, provided that it is inside the working directory as described in  1.3. Prepare the working directory).
+**Input File**: A string specifying the input phenotype file for the QTL analysis. For example **data.txt** (the path to the file is not required, provided that it is inside the working directory as described in  1.3. Prepare the working directory).
 
 
 ### Authors
