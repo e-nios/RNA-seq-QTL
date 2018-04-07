@@ -13,7 +13,7 @@ This is an example to demonstrate a step – by – step guide on how to use the
 
 * The dataset for the QTL analysis (mock.txt) is a mock sample derived from private data, so the data file consists of the means of real data after a resampling method was performed on the original dataset.
 
-* The user is not required to create the folder /EdgeR/ during the initial set up (it is used in this example to demonstrate the outputs of the workflow).
+* The user is not required to create the folder /EdgeR/, or the DWB012.Rdata and count_matrix.txt files during the initial set up (they are used in this example to demonstrate the outputs of the workflow).
 
 ## Steps
 **1.** Install the Docker engine
