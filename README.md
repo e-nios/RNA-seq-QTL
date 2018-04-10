@@ -73,7 +73,7 @@ The script must be run with **sudo privileges** (on Linux distributions) in orde
 If the user needs to modify the tool – specific arguments, he/she is required to input a JSON file (please see the JSON folder for more information) as an extra argument.
 For example, if the user has set up a working directory named “Experiment1” and the input files are FASTQ, the command should be something like:
 ```
-$ sudo python wrapper /home/$user/Experiment1/ fastq /path/to/parameters.json
+$ sudo python wrapper /home/$user/Experiment1/ fastq parameters.json
 ```
 
 ## 3. Tool – specific parameters
