@@ -1,22 +1,22 @@
 {
 	"hisat2":
 	{
-        	"reads":"-q",
-        	"orientation":"--fr"
-    	},
+    	"reads":"-q",
+    	"orientation":"--fr"
+  	},
 	"featureCounts":
 	{
 		"fileFormat":"GTF",
 		"featureType":"gene",
 		"attributeType":"gene_name",
 		"strandness":"2",
-		"threads":"1"
+		"threads":"4"
 	},
 	"edger":
 	{
 		"logFC":"0.0",
 		"pValue":"0.05",
-		"pAdjast":"BH",
+		"pAdjust":"BH",
 		"normalization":"TMM"
 	},
 	"happy":
@@ -24,4 +24,3 @@
 		"permutations":	"1000"
 	}
 }
-
