@@ -1,8 +1,8 @@
 {
 	"hisat2":
 	{
-   		 "reads":"-q",
-    		"orientation":"--fr"
+    	"reads":"-q",
+    	"orientation":"--fr"
   	},
 	"featureCounts":
 	{
@@ -16,7 +16,7 @@
 	{
 		"logFC":"0.0",
 		"pValue":"0.05",
-		"pAdjast":"BH",
+		"pAdjust":"BH",
 		"normalization":"TMM"
 	},
 	"happy":
