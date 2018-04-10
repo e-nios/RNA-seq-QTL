@@ -54,11 +54,14 @@ Contrast of interest: ND-HP
 ----------------------------------
 
 ---------------HAPPY--------------
-Chromosome: chr5
-Locus: 2235
 Phenotype Name: DBW012
 Input File: mock.txt
 ----------------------------------
+```
+
+**7.** Estimate the Confidence Intervals for the QTL analysis (see Section 4. Estimating QTL Confidence Intervals). The command should be something like:
+```
+$ sudo docker run -v <path/to/working/dir/>:/tmp enios/rnaseq-qtl:happy Rscript /mnt/simlocus.dock.R /tmp/CONDENSED chr5 2235 5 DBW012 /tmp/mock.txt
 ```
 
 ## Acknowledgements
