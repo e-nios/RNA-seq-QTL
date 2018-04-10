@@ -11,9 +11,9 @@ This is an example to demonstrate a step – by – step guide on how to use the
 
 * The condensed files are freely accessible at: http://mtweb.cs.ucl.ac.uk/mus/www/preCC/MEGA_MUGA/Mar2015.MEGA+MDA+MUGA/CONDENSED/
 
-* The dataset for the QTL analysis (mock.txt) is a mock sample derived from private data, so the data file consists of the means of real data after a resampling method was performed on the original dataset
+* The dataset for the QTL analysis (mock.txt) is a mock sample derived from private data. The data file consists of the means of real data after a resampling method was performed on the original dataset
 
-* The user is not required to create the folder /EdgeR/, or the DWB012.Rdata and count_matrix.txt files during the initial set up (they are used in this example to demonstrate the outputs of the workflow)
+* The user is not required to create the folder /EdgeR/, or the DBW012.Rdata and count_matrix.txt files during the initial set up (they are used in this example to demonstrate the outputs of the workflow)
 
 ## Steps
 **1.** Install the Docker engine
