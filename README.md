@@ -3,7 +3,7 @@
 # RNA-seq-QTL
 Workflow for Integration of RNAseq and QTL Analyses in Collaborative Cross Mice
 
-This workflow is designed for automated integration analysis of RNA-seq and QTL data. The RNA-seq part is optimized for Illumina TruSeq Technology, so if the scripts are run on default parameters the user is required to input paired – end (forward – reverse) stranded Illumina reads.
+This workflow is designed for automated integration analysis of RNA-seq and QTL (genotype/phenotype) data. The RNA-seq part is optimized for Illumina TruSeq Technology, so if the scripts are run on default parameters the user is required to input paired – end (forward – reverse) stranded Illumina reads.
 
 ## 1. Prerequisites
 
@@ -96,7 +96,7 @@ If the script is run with the correct arguments, the user will be prompt to inpu
 **Input File**: A string specifying the input phenotype file for the QTL analysis. For example **data.txt** (the path to the file is not required, provided that it is inside the working directory as described in  1.3. Prepare the working directory).
 
 ## 4. Estimating QTL Confidence Intervals
-If the user wishes to assess the CI of the QTL analysis performed in step 3.4, he/she is required to run the HAPPY Docker container with the following command:
+If the user wishes to assess the CI of the QTL peak from the analysis performed in step 3.4, he/she is required to run the HAPPY Docker container with the following command:
 ```
 $ sudo docker run -v <path/to/working/dir/>:/tmp enios/rnaseq-qtl:happy Rscript /mnt/simlocus.dock.R /tmp/CONDENSED <Chromosome> <Locus> <Chrom_Number> <Phenotype_Name> /tmp/<Input_File>
 ```
