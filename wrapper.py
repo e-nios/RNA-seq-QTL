@@ -34,8 +34,6 @@ print("----------------------------------\n")
 
 # HAPPY parameters
 print("---------------HAPPY--------------")
-chrom = raw_input("Chromosome: ")
-locus = raw_input("Locus: ")
 phenName = raw_input("Phenotype Name: ")
 inputFile = raw_input("Input File: ")
 print("----------------------------------\n")
@@ -59,7 +57,7 @@ featureCounts = core.featureCounts(gtf, path, parameters)
 edger = core.edgeR(path, condition, test, parameters)
 
 # HAPPY operator
-happy = core.happy(path, phenName, chrom, locus, parameters)
+happy = core.happy(path, phenName,  parameters)
 
 if __name__ == '__main__':
 	# Check if reads are Single or Paired-end
@@ -101,4 +99,3 @@ if __name__ == '__main__':
 	
 	# Start the QTL analysis
 	happy.qtl_map(inputFile)
-	happy.ci_est(inputFile)
