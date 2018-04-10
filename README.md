@@ -91,14 +91,26 @@ If the script is run with the correct arguments, the user will be prompt to inpu
 **Contrast of interest**: A string containing the contrast of interest, following the previous example the input should be **Normal-Case** (or **Case-Normal**, depending on the contrast the user needs to test).
 
 ### 3.4. HAPPY
-**Chromosome**: A string specifying the chromosome containing the QTL peak from the QTL analysis. For example **chr5** (the user is required to input the chr prefix)
-
-**Locus**: An integer specifying the genetic locus of the QTL peak from the QTL analysis. For example **2235**.
-
 **Phenotype Name**: A string specifying the phenotype name in the data.txt file. For example **DB0123**.
 
 **Input File**: A string specifying the input phenotype file for the QTL analysis. For example **data.txt** (the path to the file is not required, provided that it is inside the working directory as described in  1.3. Prepare the working directory).
 
+## 4. Estimating QTL Confidence Intervals
+If the user wishes to assess the CI of the QTL analysis performed in step 3.4, he/she is required to run the HAPPY Docker container with the following command:
+```
+$ sudo docker run -v <path/to/working/dir/>:/tmp enios/rnaseq-qtl:happy Rscript /mnt/simlocus.dock.R /tmp/CONDENSED <Chromosome> <Locus> <Chrom_Number> <Phenotype_Name> /tmp/<Input_File>
+```
+Where:
+
+**Chromosome**: A string specifying the chromosome containing the QTL peak from the QTL analysis. For example **chr5** (the user is required to input the chr prefix)
+
+**Locus**: An integer specifying the genetic locus of the QTL peak from the QTL analysis. For example **2235**.
+
+**Chrom_Number**: An integer or character specifying the chromosome containing the QTL peak from the QTL analysis. For example **5** or **X**.
+
+**Phenotype_Name**: A string specifying the phenotype name in the data.txt file. For example **DB0123**.
+
+**Input_File**: A string specifying the input phenotype file for the QTL analysis. For example **data.txt** (the path to the file is not required, see above – section 3.4)
 
 ### Authors
 
