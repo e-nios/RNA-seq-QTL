@@ -104,14 +104,14 @@ class featureCounts(object):
                 '-T%s' % self.threads , '-a', '/data/%s' % self.gtf, '%s' % inputFile, '-o', '/data/counts/%s.txt' % inputFile.split('/')[3].rstrip('.bam')])
 
 class edgeR(object):
-	def __init__(self, base_dir, condition, test, jsonArgs = None, logFC = 0.0, pValue = 0.05, pAdjast = 'BH', normalization = 'TMM'):
+	def __init__(self, base_dir, condition, test, jsonArgs = None, logFC = 0.0, pValue = 0.05, pAdjust = 'BH', normalization = 'TMM'):
 		if isinstance(jsonArgs, dict):
 			self.base_dir = base_dir
 			self.condition = condition
 			self.test = test
 			self.logFC = jsonArgs['edger']['logFC']
 			self.pValue = jsonArgs['edger']['pValue']
-			self.pAdjast = jsonArgs['edger']['pAdjast']
+			self.pAdjust = jsonArgs['edger']['pAdjust']
 			self.normalization = jsonArgs['edger']['normalization']
 		else:
 			self.base_dir = base_dir
@@ -119,34 +119,30 @@ class edgeR(object):
 			self.test = test
 			self.logFC = logFC
 			self.pValue = pValue
-			self.pAdjast = pAdjast
+			self.pAdjust = pAdjust
 			self.normalization = normalization
 
 	def deTest(self, inputFile):
 		subprocess.check_call(['docker', 'run', '-v', '%s:/tmp/' % self.base_dir,
                 'enios/rnaseq-qtl:edger', 'Rscript', '/mnt/edger.R', '-R', 
                 '/tmp/EdgeR_summary', '-o', '/tmp/EdgeR', '-m', '/tmp/%s' % inputFile,
-                '-i', self.condition, '-C', self.test, '-l', '%s' % self.logFC, '-p', '%s' % self.pValue, '-d', self.pAdjast, '-n', self.normalization, '-b'])
+                '-i', self.condition, '-C', self.test, '-l', '%s' % self.logFC, '-p', '%s' % self.pValue, '-d', self.pAdjust, '-n', self.normalization, '-b'])
 
 class happy(object):
-	def __init__(self, baseDir, pheName, chrom, locus, jsonArgs = None, permermutations = 1000):
+	def __init__(self, baseDir, pheName, jsonArgs = None, permutations = 1000):
 		if isinstance(jsonArgs, dict):
 			self.baseDir = baseDir
 			self.pheName = pheName
-			self.chrom = chrom
-			self.locus = locus
 			self.permutations = jsonArgs["happy"]["permutations"]
 		else:
 			self.baseDir = baseDir
 			self.pheName = pheName
-			self.permutations = permermutations
-			self.chrom = chrom
-			self.locus = locus
+			self.permutations = permutations
 
 	def qtl_map(self, inputFile):
 		subprocess.check_call(['docker', 'run', '-v', '%s:/tmp/' % self.baseDir, 'enios/rnaseq-qtl:happy', 'Rscript', '/mnt/happy.dock.R', 
 			'/tmp/CONDENSED', '/tmp/%s' % inputFile, self.pheName, "%s" % self.permutations, '/tmp/%s.Rdata' % self.pheName])
 
-	def ci_est(self, inputFile):
+	def ci_est(self, inputFile, chrom, locus):
 		subprocess.check_call(['docker', 'run', '-v', '%s:/tmp/' % self.baseDir, 'enios/rnaseq-qtl:happy', 'Rscript', '/mnt/simlocus.dock.R', 
-			'/tmp/CONDENSED', self.chrom, "%s" % self.locus, "%s" % self.chrom.lstrip("chr"), self.pheName, '/tmp/%s' % inputFile])
+			'/tmp/CONDENSED', chrom, "%s" % locus, "%s" % chrom.lstrip("chr"), self.pheName, '/tmp/%s' % inputFile])
