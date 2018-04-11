@@ -33,7 +33,7 @@ If you wish to modify the JSON file (or create a new one) please make sure that 
 
 **"pValue"**:	**"0.05"** - Float specifying the p – value requirement. “0.05” by **default**
 
-**"pAdjast"**:	**"BH"** - String specifying the p-value adjustment method. The adjustment methods include Benjamini & Hochberg (1995) ("BH"), and Benjamini & Yekutieli (2001) ("BY"). “BH” by **default**.
+**"pAdjust"**:	**"BH"** - String specifying the p-value adjustment method. The adjustment methods include Benjamini & Hochberg (1995) ("BH"), and Benjamini & Yekutieli (2001) ("BY"). “BH” by **default**.
 
 **"normalization"**:	**"TMM"** - String specifying type of normalisation used. Should be one of “TMM” (Trimmed Mean of M values), “RLE” (Relative Log Expression), “upperquartile” or “none”. “TMM” by **default**.
 
