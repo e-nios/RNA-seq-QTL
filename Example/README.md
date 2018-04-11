@@ -77,7 +77,6 @@ All the data are publicly [available](https://trace.ncbi.nlm.nih.gov/Traces/stud
 * **SRR2932705** - High – Fat Diet
 * **SRR2932706** - High – Fat Diet
 * **SRR2932707** - High – Fat Diet
-* **SRR2932708** - High – Fat Diet
 
 We used the fastq-dump program of the [SRAtoolkit](https://trace.ncbi.nlm.nih.gov/Traces/sra/sra.cgi?view=software) 
 to download the FASTQ files:
