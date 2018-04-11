@@ -23,7 +23,7 @@ This is an example to demonstrate a step – by – step guide on how to use the
 **3.** Download core.py and wrapper.py (save both scripts in the same directory)
 
 **4.** Create a working directory (e.g. ~/experiment1/). Inside the directory create the following subdirectories:
-* ~/experiment1/reads1/ and ~/experiment1/reads2/ (where you should save the FASTQ files)
+* ~/experiment1/reads1/ **and** ~/experiment1/reads2/ (where you should save the FASTQ files)
 * ~/experiment1/CONDENSED/ (where you should save the condensed files)
 * ~/experiment1/alignments/
 * ~/experiment1/counts/
