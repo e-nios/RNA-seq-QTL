@@ -11,5 +11,3 @@ SRR2932705_1.fastq
 SRR2932706_1.fastq
 
 SRR2932707_1.fastq
-
-SRR2932708_1.fastq
